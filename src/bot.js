@@ -21,6 +21,11 @@ client.on("message", (message) => {
 		.substring(PREFIX.length)
 		.split(/\s+/);
 	if (commandName == "play") {
+		if (!args[0]) {message.reply(`Please add what type this is (${PREFIX}help play)`); return;}
+		if (args[0] !== "link") {
+			message.reply(`I do not know what type this is please add a type that I know (${PREFIX}help play)`);
+			return;
+		}
 		const { voice } = message.member;
 		if (!voice.channel) {
 			message.reply("You have to be in a voice channel");
@@ -28,8 +33,10 @@ client.on("message", (message) => {
 		}
 		const options = {seek: 0, volume: 1};
 		voice.channel.join().then(connection => {
-			const stream = args[0];
-			const dispatcher = connection.play(stream, options);
+			if (args[0] === "link") {
+				const stream = args[1];
+				const dispatcher = connection.play(stream, options);
+			}
 			client.on('voiceStateUpdate', (oldMember, newMember) => {
 				if (oldMember.serverDeaf !== null) {
 					if (oldMember.serverDeaf === newMember.serverDeaf && oldMember.serverMute === newMember.serverMute && oldMember.selfDeaf == newMember.selfDeaf && oldMember.selfMute === newMember.selfMute && oldMember.selfVideo === newMember.selfVideo && oldMember.streaming === newMember.streaming) {} else {
@@ -44,7 +51,14 @@ client.on("message", (message) => {
 				}
 			})
 		})
-	}	
+	}
+	if (commandName === "help") {
+		if (args[0] === "play") {
+			message.reply(`\n==:Play Help:==\nlink - listen to a radio from a stream link\n`);
+		}else if (!args[0]) {
+			message.reply(`\n==:Help:==\n${PREFIX}play {any of ${PREFIX}help play} {link} - listen to a radio\n${PREFIX}help - shows this`);
+		}
+	}
 })
 
 
