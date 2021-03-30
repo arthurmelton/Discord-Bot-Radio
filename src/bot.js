@@ -1,4 +1,5 @@
 require("dotenv").config();
+const ytdl = require('ytdl-core');
 const { Client } = require('discord.js');
 const client = new Client();
 const PREFIX = "!R";
@@ -22,7 +23,7 @@ client.on("message", (message) => {
 		.split(/\s+/);
 	if (commandName == "play") {
 		if (!args[0]) {message.reply(`Please add what type this is (${PREFIX}help play)`); return;}
-		if (args[0] !== "link") {
+		if (args[0] !== "link" && args[0] !== "youtube") {
 			message.reply(`I do not know what type this is please add a type that I know (${PREFIX}help play)`);
 			return;
 		}
@@ -35,6 +36,9 @@ client.on("message", (message) => {
 		voice.channel.join().then(connection => {
 			if (args[0] === "link") {
 				const stream = args[1];
+				const dispatcher = connection.play(stream, options);
+			}else if (args[0] === "youtube") {
+				const stream = ytdl(args[1], { filter : 'audioonly' });
 				const dispatcher = connection.play(stream, options);
 			}
 			client.on('voiceStateUpdate', (oldMember, newMember) => {
@@ -54,7 +58,7 @@ client.on("message", (message) => {
 	}
 	if (commandName === "help") {
 		if (args[0] === "play") {
-			message.reply(`\n==:Play Help:==\nlink - listen to a radio from a stream link\n`);
+			message.reply(`\n==:Play Help:==\nlink - listen to a radio from a stream link\nyoutue - play youtube video`);
 		}else if (!args[0]) {
 			message.reply(`\n==:Help:==\n${PREFIX}play {any of ${PREFIX}help play} {link} - listen to a radio\n${PREFIX}help - shows this`);
 		}
