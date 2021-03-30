@@ -23,6 +23,7 @@
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "nodemon": "^2.0.7",
+    "request": "^2.88.2",
     "ytdl-core": "^4.5.0"
   }
 }
