@@ -23,10 +23,6 @@ client.on("message", (message) => {
 		.split(/\s+/);
 	if (commandName == "play") {
 		if (!args[0]) {message.reply(`Please add what type this is (${PREFIX}help play)`); return;}
-		if (args[0] !== "link" && args[0] !== "youtube") {
-			message.reply(`I do not know what type this is please add a type that I know (${PREFIX}help play)`);
-			return;
-		}
 		const { voice } = message.member;
 		if (!voice.channel) {
 			message.reply("You have to be in a voice channel");
@@ -40,6 +36,13 @@ client.on("message", (message) => {
 			}else if (args[0] === "youtube") {
 				const stream = ytdl(args[1], { filter : 'audioonly' });
 				const dispatcher = connection.play(stream, options);
+			}else if (args[0] === "iheart") {
+				const stream = ytdl(args[1], { filter : 'audioonly' });
+				const dispatcher = connection.play(stream, options);
+			}else {
+				message.reply(`I do not know what type this is please add a type that I know (${PREFIX}help play)`);
+				voice.channel.leave();
+				return;
 			}
 			client.on('voiceStateUpdate', (oldMember, newMember) => {
 				if (oldMember.serverDeaf !== null) {
